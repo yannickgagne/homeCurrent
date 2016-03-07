@@ -21,11 +21,16 @@ DallasTemperature sensors(&oneWire);
 
 MCP3008 adc(CLOCK_PIN, MOSI_PIN, MISO_PIN, CS_PIN);
 WiFiClient client;
+int loopCount;
 
 void setup() {
   Serial.begin(9600);
   delay(100);
+
+  //Pin 0 output for LED flash
   pinMode(0, OUTPUT);
+
+  //Init sensors DS18B20
   sensors.begin();
 
   // Connect to wifi
@@ -33,35 +38,58 @@ void setup() {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
   WiFi.begin(ssid, pwd);
 
+  //wait for WIFI to be up
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
 
   Serial.println("");
-  Serial.println("WiFi connected!");
-  Serial.println("IP: ");
+  Serial.println("WiFi connected! IP:");
   Serial.println(WiFi.localIP());
+
+  loopCount = 0;
 }
 
 void loop() {
-  digitalWrite(0, HIGH);
-  delay(500);
-  int val = adc.readADC(0);
-  Serial.println(val);
-  Serial.println("requesting temp...");
-  sensors.requestTemperatures();
-  Serial.println(sensors.getTempCByIndex(0));
-  digitalWrite(0, LOW);
-  delay(500);
+  loopCount += 1;
+  //LED flash (takes 1 sec)
+  flashLed0();
 
+  //read CH0 of MCP3008 chip
+  int ch0val = adc.readADC(0);
+
+  //read temp from DS18B20 sensor 0
+  sensors.requestTemperatures();
+  float se0val = sensors.getTempCByIndex(0);
+
+  delay(250);
+
+  //Only POST to Thingspeak 1 time for each 10 loops
+  if(loopCount > 10) {
+    //Post DATA to Thingspeak API
+    if (postTS(ch0val, se0val)) {
+      Serial.println("Thingspeak post OK");
+    } else {
+      Serial.println("Thingspeak post FAILED");
+    }
+    loopCount = 0;
+  }
+
+  //wait 1sec between reads
+  delay(1000);
+}
+
+int postTS(int val1, float val2) {
+  int result;
   if (client.connect(tsServer,80)) {
     String postStr = tsKey;
     postStr += "&field1=";
-    postStr += String(val);
+    postStr += String(val1);
+    postStr += "&field2=";
+    postStr += String(val2);
     postStr += "\r\n\r\n";
 
     client.print("POST /update HTTP/1.1\n");
@@ -73,13 +101,23 @@ void loop() {
     client.print(postStr.length());
     client.print("\n\n");
     client.print(postStr);
-    
-    Serial.println("ADC: ");
-    Serial.print(val);
+    result = 0;
+  } else {
+    result = 1;
   }
   client.stop();
-    
-  Serial.println("Waiting...");
-  // thingspeak needs minimum 15 sec delay between updates
-  delay(20000);
+  return result;
+}
+
+void flashLed0() {
+  digitalWrite(0, LOW);
+  delay(200);
+  digitalWrite(0, HIGH);
+  delay(200);
+  digitalWrite(0, LOW);
+  delay(200);
+  digitalWrite(0, HIGH);
+  delay(200);
+  digitalWrite(0, LOW);
+  delay(200);
 }
