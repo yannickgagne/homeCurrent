@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "MCP3008.h"
 #include "ESP8266WiFi.h"
 #include "OneWire.h"
