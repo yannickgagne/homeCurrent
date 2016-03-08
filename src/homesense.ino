@@ -67,10 +67,16 @@ void loop() {
 
   delay(250);
 
+  Serial.print("ADC0: ");
+  Serial.println(ch0val);
+  Serial.print("TEMP0: ");
+  Serial.println(se0val);
+
+
   //Only POST to Thingspeak 1 time for each 10 loops
   if(loopCount > 10) {
     //Post DATA to Thingspeak API
-    if (postTS(ch0val, se0val)) {
+    if (postTS(ch0val, se0val) == 0) {
       Serial.println("Thingspeak post OK");
     } else {
       Serial.println("Thingspeak post FAILED");
