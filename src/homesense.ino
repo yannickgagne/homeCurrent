@@ -114,8 +114,6 @@ int postTS(int val1, float val2) {
 }
 
 void flashLed0() {
-  digitalWrite(0, LOW);
-  delay(200);
   digitalWrite(0, HIGH);
   delay(200);
   digitalWrite(0, LOW);
@@ -123,5 +121,7 @@ void flashLed0() {
   digitalWrite(0, HIGH);
   delay(200);
   digitalWrite(0, LOW);
+  delay(200);
+  digitalWrite(0, HIGH);
   delay(200);
 }
