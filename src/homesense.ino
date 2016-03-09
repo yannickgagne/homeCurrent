@@ -65,8 +65,6 @@ void loop() {
   sensors.requestTemperatures();
   float se0val = sensors.getTempCByIndex(0);
 
-  delay(250);
-
   Serial.print("ADC0: ");
   Serial.println(ch0val);
   Serial.print("TEMP0: ");
@@ -74,7 +72,7 @@ void loop() {
 
 
   //Only POST to Thingspeak 1 time for each 10 loops
-  if(loopCount > 10) {
+  if(loopCount > 30) {
     //Post DATA to Thingspeak API
     if (postTS(ch0val, se0val) == 0) {
       Serial.println("Thingspeak post OK");
