@@ -1,4 +1,4 @@
-update=2016-03-14 14:06:58
+update=2016-03-14 16:02:17
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,3 +60,4 @@ LibName28=contrib
 LibName29=valves
 LibName30=adafruit_huzzah
 LibName31=ds18b20
+LibName32=w_connectors
