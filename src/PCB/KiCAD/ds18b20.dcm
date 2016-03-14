@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP DS18B20
+D 1-Wire Digital Thermometer, TO-92
+K Thermometer
+F https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf
+$ENDCMP
+#
+#End Doc Library
