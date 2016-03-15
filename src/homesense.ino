@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "config.h"
 
 #include "MCP3008.h"
 #include "ESP8266WiFi.h"
@@ -6,8 +7,8 @@
 #include "DallasTemperature.h"
 
 const char* ssid = "610Main24";
-const char* pwd = "wifi610zejm";
-String tsKey = "38C3XS8ZC6J97GIE";
+const char* pwd = WIFI_PWD;
+String tsKey = THINGSPEAK_CHANNEL_KEY;
 const char* tsServer = "api.thingspeak.com";
 
 #define CS_PIN 15
